@@ -8,14 +8,14 @@ import smtplib
 my_email = "{EMAIL}"
 my_pass = "{PASSWORD}"
 # noinspection SpellCheckingInspection
-connection = smtplib.SMTP("{SMTP SERVER}")
+connection = smtplib.SMTP("{SMTP_SERVER}")
 connection.starttls()
 connection.login(user=my_email, password=my_pass)
 
 msg = EmailMessage()
 msg['Subject'] = "{SUBJECT}"
 msg['From'] = my_email
-msg['To'] = "{DESTINATION EMAIL}"
+msg['To'] = "{DESTINATION_EMAIL}"
 
 web_url = "https://hotline.ua/bt-roboty-pylesosy/irobot-roomba-i3/?tab=prices&filter=official"
 # noinspection SpellCheckingInspection
