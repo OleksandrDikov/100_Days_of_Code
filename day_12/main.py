@@ -1,14 +1,14 @@
 from art import logo
 import random
 
+print(logo)
 print("Welcome to the Number Guessing Game!")
 print("I'm thinking of a number between 1 and 100.")
 
-secret_number = random.randint(1, 101)
+secret_number = random.randint(1, 100)
 #print(f"Pssst, the correct answer is {secret_number}")
 
 difficulty = input("Choose a difficulty. Type 'easy' or 'hard': ")
-
 if difficulty == "easy":
     attempts = 10
 elif difficulty == "hard":
