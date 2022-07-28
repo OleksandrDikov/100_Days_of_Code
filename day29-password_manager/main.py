@@ -2,6 +2,7 @@ from tkinter import messagebox
 from tkinter import *
 import random
 import pyperclip
+import json
 
 
 def gen_pass():
@@ -16,18 +17,51 @@ def gen_pass():
     pyperclip.copy(password)
 
 
+def search_pass():
+    site = web_entry.get()
+    if not site:
+        messagebox.showwarning(title="Warning", message="Please type site name")
+    else:
+        try:
+            with open("data.json", "r") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            messagebox.showwarning(title="Warning", message="You don't have any data")
+        else:
+            if site in data:
+                messagebox.showinfo(title=site, message=f"Login: {data[site]['username']}\n"
+                                                        f"Password: {data[site]['password']}")
+            else:
+                messagebox.showinfo(title=site, message=f"You don't have account on this site")
+
+
+    window.focus()
+    web_entry.focus()
+
+
 def save():
+    new_data = {
+        web_entry.get(): {
+            "username": user_entry.get(),
+            "password": pass_entry.get()
+        }
+    }
     if pass_entry.get() == "":
         messagebox.showwarning(title="Warning!", message="Password is required")
         pass_entry.focus()
     else:
-        new_item = messagebox.askyesno(title="New item",
-                                       message=f"Save password\n site: {web_entry.get()}\n login: {user_entry.get()}")
-        if new_item:
-            with open("data.txt", "a") as f:
-                f.write(f"{web_entry.get()} | {user_entry.get()} | {pass_entry.get()}\n")
-            web_entry.delete(0, 'end')
-            pass_entry.delete(0, 'end')
+        try:
+            with open("data.json", "r") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            with open("data.json", "w") as file:
+                json.dump(new_data, file, indent=2)
+        else:
+            data.update(new_data)
+            with open("data.json", "w") as file:
+                json.dump(data, file, indent=2)
+        web_entry.delete(0, 'end')
+        pass_entry.delete(0, 'end')
 
 
 window = Tk()
@@ -46,14 +80,16 @@ user_label.grid(row=2, column=0)
 pass_label = Label(text="Password:")
 pass_label.grid(row=3, column=0)
 
-web_entry = Entry(width=37)
-web_entry.grid(row=1, column=1, columnspan=2)
+web_entry = Entry(width=22)
+web_entry.grid(row=1, column=1)
 web_entry.focus()
 user_entry = Entry(width=37)
 user_entry.grid(row=2, column=1, columnspan=2)
 pass_entry = Entry(width=22)
 pass_entry.grid(row=3, column=1)
 
+src_button = Button(text="Search", width=11, command=search_pass)
+src_button.grid(row=1, column=2)
 gen_button = Button(text="Generate Password", width=11, command=gen_pass)
 gen_button.grid(row=3, column=2)
 add_button = Button(text="Add", width=35, command=save)
